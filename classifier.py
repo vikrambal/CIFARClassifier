@@ -1,7 +1,4 @@
-# Homework 4: Image Classification on CIFAR-10
-  🛫 🚘 🐦 🐱 🦌 🐶 🐸 🐴 🚢 🛻
-
-In this problem, we will explore different deep learning architectures for image classification on the CIFAR-10 dataset.
+# Image Classification on CIFAR-10
 
 ### Problem Introduction
 
