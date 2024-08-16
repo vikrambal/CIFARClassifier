@@ -1,6 +1,5 @@
-# Image Classification on CIFAR-10
-
-### Problem Introduction
+# -*- coding: utf-8 -*-
+"""Image Classification on CIFAR-10
 
 The specific task we are trying to solve in this problem is image classification. We're using a common dataset called CIFAR-10 which has 60,000 images separated into 10 classes:
 * airplane
@@ -13,7 +12,6 @@ The specific task we are trying to solve in this problem is image classification
 * horse
 * ship
 * truck
-
 """
 
 import torch
@@ -21,12 +19,7 @@ import torch
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 print(DEVICE)  # this should print out CUDA
 
-## End-to-end Example
-
-### Background and Setup
-
-1. Import all of the dependencies required for this problem:
-"""
+# 1. Import dependencies
 
 # Commented out IPython magic to ensure Python compatibility.
 import torch
@@ -42,30 +35,19 @@ from tqdm.notebook import tqdm
 
 # %matplotlib inline
 
-"""2. And check if we are using GPU, if it is available."""
+# 2. Check if using GPU
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 print(DEVICE)  # this should print out CUDA
 
-"""*To use the GPU, you will need to send both the model and the data to a device; this transfers the model from its default location on CPU to the GPU.*
-
-  ```python
-  model = model.to(DEVICE)  # Sending a model to GPU
-
-  for x, y in tqdm(data_loader):
-    x, y = x.to(DEVICE), y.to(DEVICE)
-  ```
-*When reading tensors you may need to send them back to cpu, you can do so with `x = x.cpu()`*
-
-3. Load the CIFAR-10 data.
-"""
+#3. Load CIFAR data
 
 train_dataset = torchvision.datasets.CIFAR10("./data", train=True, download=True, transform=torchvision.transforms.ToTensor())
 test_dataset = torchvision.datasets.CIFAR10("./data", train=False, download=True, transform=torchvision.transforms.ToTensor())
 
-# Since training on all of the 50,000 training samples can be prohibitively expensive, we define a flag called* `SAMPLE_DATA` *that controls if we should make the dataset smaller for faster training time. When* `SAMPLE_DATA=true`, *we'll only use 10% of our training data when training and performing our hyperparameter searches.* 
+#4. Wrap dataset 
 
-SAMPLE_DATA = False
+SAMPLE_DATA = False # set this to True if you want to speed up training when searching for hyperparameters!
 
 batch_size = 128
 
@@ -93,11 +75,6 @@ test_loader = DataLoader(
     shuffle=True
 )
 
-"""Now, we're ready to train!
-
-### Logistic Regression Example
-
-"""
 
 imgs, labels = next(iter(train_loader))
 print(f"A single batch of images has shape: {imgs.size()}")
@@ -127,10 +104,7 @@ classes = ["airplane", "automobile", "bird", "cat", "deer", "dog", "frog",
            "horse", "ship", "truck"]
 print(f"This image is labeled as class {classes[example_label]}")
 
-"""In this problem, we will attempt to predict what class an image is labeled as.
-
-1. Create our model.
-"""
+#1. Create model
 
 def linear_model() -> nn.Module:
     """Instantiate a linear model and send it to device."""
@@ -140,7 +114,7 @@ def linear_model() -> nn.Module:
          )
     return model.to(DEVICE)
 
-"""2. Define a method to train this model using SGD as our optimizer."""
+#2. Method for training (using SGD)
 
 def train(
     model: nn.Module, optimizer: SGD,
@@ -182,7 +156,7 @@ def train(
         train_losses.append(train_loss / len(train_loader))
         train_accuracies.append(train_acc / (batch_size * len(train_loader)))
 
-        # Validation loop; uses .no_grad() context manager to save memory.
+        # Validation loop; use .no_grad() context manager to save memory.
         model.eval()
         val_loss = 0.0
         val_acc = 0.0
@@ -202,9 +176,7 @@ def train(
 
     return train_losses, train_accuracies, val_losses, val_accuracies
 
-"""3. Define our hyperparameter search. For this problem, we will be using SGD. The two hyperparameters for our linear model trained with SGD are the learning rate and momentum. Only learning rate will be searched for in this example.**
-
-"""
+#3. Hyperparameter search
 
 def parameter_search(train_loader: DataLoader,
                      val_loader: DataLoader,
@@ -219,6 +191,8 @@ def parameter_search(train_loader: DataLoader,
 
     Returns:
     The learning rate with the least validation loss.
+    NOTE: you may need to modify this function to search over and return
+     other parameters beyond learning rate.
     """
     num_iter = 10
     best_loss = torch.tensor(np.inf)
@@ -244,18 +218,18 @@ def parameter_search(train_loader: DataLoader,
 
     return best_lr
 
-"""4. Now that we have everything, we can train and evaluate our model."""
+#4. Train and evaluate model
 
 best_lr = parameter_search(train_loader, val_loader, linear_model)
 
 model = linear_model()
 optimizer = SGD(model.parameters(), best_lr)
 
-# We are using 20 epochs for this example. You may have to use more.
+# We are using 20 epochs
 train_loss, train_accuracy, val_loss, val_accuracy = train(
     model, optimizer, train_loader, val_loader, 20)
 
-"""5. We can also plot the training and validation accuracy for each epoch."""
+#5. Plot training and accuracy for each epoch
 
 epochs = range(1, 21)
 plt.plot(epochs, train_accuracy, label="Train Accuracy")
@@ -266,7 +240,7 @@ plt.legend()
 plt.title("Logistic Regression Accuracy for CIFAR-10 vs Epoch")
 plt.show()
 
-"""The last thing we have to do is evaluate our model on the testing data."""
+# Evaluate model on test data
 
 def evaluate(
     model: nn.Module, loader: DataLoader
