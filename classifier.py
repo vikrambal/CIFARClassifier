@@ -63,8 +63,7 @@ print(DEVICE)  # this should print out CUDA
 train_dataset = torchvision.datasets.CIFAR10("./data", train=True, download=True, transform=torchvision.transforms.ToTensor())
 test_dataset = torchvision.datasets.CIFAR10("./data", train=False, download=True, transform=torchvision.transforms.ToTensor())
 
-*Since training on all of the 50,000 training samples can be prohibitively expensive, we define a flag called* `SAMPLE_DATA` *that controls if we should make the dataset smaller for faster training time. When* `SAMPLE_DATA=true`, *we'll only use 10% of our training data when training and performing our hyperparameter searches.* 
-"""
+# Since training on all of the 50,000 training samples can be prohibitively expensive, we define a flag called* `SAMPLE_DATA` *that controls if we should make the dataset smaller for faster training time. When* `SAMPLE_DATA=true`, *we'll only use 10% of our training data when training and performing our hyperparameter searches.* 
 
 SAMPLE_DATA = False
 
@@ -330,8 +329,6 @@ def parameter_search_parta(
 
     Returns:
     The learning rate with the least validation loss.
-    NOTE: you may need to modify this function to search over and return
-     other parameters beyond learning rate.
     """
     num_iter = 10
     best_3_results = []
@@ -394,8 +391,6 @@ def parameter_search_partb(train_loader: DataLoader,
 
     Returns:
     The learning rate with the least validation loss.
-    NOTE: you may need to modify this function to search over and return
-     other parameters beyond learning rate.
     """
     num_iter = 10
     best_3_results = []
