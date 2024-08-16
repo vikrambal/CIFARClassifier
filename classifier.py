@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Image Classification on CIFAR-10
 
 The specific task we are trying to solve in this problem is image classification. We're using a common dataset called CIFAR-10 which has 60,000 images separated into 10 classes:
